@@ -2,7 +2,7 @@ import json
 import re
 import argparse
 
-def clean_and_format(input_file, output_file):
+def clean_and_format(input_file, output_file, max_split_len,):
     # Function to check if the line is the start of a new conversation
     def is_start_of_conversation(line):
         return bool(re.match(r'\[\d{1,2}/\d{1,2}/\d{2}, \d{1,2}:\d{2}:\d{2}\s[APM]{2}\]', line))
@@ -25,7 +25,7 @@ def clean_and_format(input_file, output_file):
         if is_start_of_conversation(line) and current_chunk:
             chunks.append(current_chunk.strip())
             current_chunk = line
-        elif len(current_chunk) + len(line) < 2000:
+        elif len(current_chunk) + len(line) < max_split_len:
             current_chunk += line + ' '
         else:
             chunks.append(current_chunk.strip())
@@ -67,11 +67,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Clean and format chat data into JSONL format.")
     parser.add_argument("--input_file", required=True, help="The input text file containing chat data.")
     parser.add_argument("--output_file", default="output_file.jsonl", help="The output JSONL file where the cleaned data will be stored. Default: output_file.jsonl")
+    parser.add_argument("--max_split_len", type=int, default=2000, help="Depending on the size of your export, adjust this number to merge multiple messages required for training data")
     parser.add_argument("--test_file", default="test.jsonl", help="The output JSONL file for test data. Default: test.jsonl")
     parser.add_argument("--valid_file", default="valid.jsonl", help="The output JSONL file for validation data. Default: valid.jsonl")
     parser.add_argument("--train_file", default="train.jsonl", help="The output JSONL file for training data. Default: train.jsonl")
 
     args = parser.parse_args()
 
-    clean_and_format(args.input_file, args.output_file)
+    clean_and_format(args.input_file, args.output_file, args.max_split_len)
     split_jsonl(args.output_file, args.test_file, args.valid_file, args.train_file)
