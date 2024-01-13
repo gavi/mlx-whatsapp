@@ -49,3 +49,15 @@ python lora.py --model ./mlx_model \
                "Mickey Mouse: Hey Minnie, are we going to the fair?
                Minnie: "
 ```
+
+## Combine your adapter and model together
+
+```bash
+python fuse.py --model mlx_model --adapter-file whatsapp.npz --save-path fused
+```
+
+Now the folder fused contains `safetensors` that can be used directly with transformers. 
+
+## Warning
+
+A word of caution - Dont upload your fused models to public sites such a huggingface as your model can leak personal data that you trained it on. 
