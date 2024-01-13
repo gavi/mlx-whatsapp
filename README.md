@@ -1,6 +1,6 @@
 # mlx-whatsapp
 
-This is an experimental project to convert your chat backups from Whatsapp to finetune mistral using mlx. The `lora.py`, `models.py` and `convert.py` are from [https://github.com/ml-explore/mlx-examples](https://github.com/ml-explore/mlx-examples)
+This is an experimental project to convert your chat backups from Whatsapp to finetune mistral using mlx. The `lora.py`, `models.py`, `models` directory and `convert.py` are from [https://github.com/ml-explore/mlx-examples](https://github.com/ml-explore/mlx-examples)
 
 ## How to backup your chats
 
@@ -15,20 +15,12 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-Next, download and convert the model. The Mistral weights can be downloaded with:
+Next, download and convert the model. The following command will download mistral from huggingface and convert it to quantized version
 
 ```
-curl -O https://files.mistral-7b-v0-1.mistral.ai/mistral-7B-v0.1.tar
-tar -xf mistral-7B-v0.1.tar
+python convert.py --hf-path mistralai/Mistral-7B-v0.1 -q  
 ```
 
-Convert the model with:
-
-```
-python convert.py \
-    --torch-path mistral-7B-v0.1 \
-    --mlx-path mistral_mlx_q -q
-```
 
 ## Converting the files
 
@@ -44,16 +36,16 @@ By default the test and validation files take 30 samples. You can adjust them.
 ## Training
 
 ```bash
- python lora.py --model mistral_mlx_q --train --iters 600 --data ./data --batch-size 2 --adapter-file whatsapp.npz
+ python lora.py --model mlx_model --train --iters 600 --data ./data --batch-size 2 --adapter-file whatsapp.npz
 ```
 
 ## Inference
 
 ```bash
-python lora.py --model ./mistral_mlx_q \
+python lora.py --model ./mlx_model \
                --adapter-file ./whatsapp.npz \
-               --num-tokens 500 \
+               --max-tokens 500 \
                --prompt \
-               "Mickey Mouse: Hey Minnie, are we going to the fair
+               "Mickey Mouse: Hey Minnie, are we going to the fair?
                Minnie: "
 ```
