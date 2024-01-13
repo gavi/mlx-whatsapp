@@ -2,3 +2,4 @@ mlx>=0.0.9
 sentencepiece
 torch
 numpy
+transformers
