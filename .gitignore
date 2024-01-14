@@ -1,2 +1,4 @@
 chat.txt
 __pycache__
+mlx_model
+*.npz
